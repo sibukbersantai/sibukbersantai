@@ -3,119 +3,672 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sibuk Bersantai - Admin</title>
+    <title>Sibuk Bersantai - Admin CMS</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        /* Login Screen */
+        .login-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .container {
+
+        .login-box {
             background: white;
+            padding: 40px;
             border-radius: 8px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            max-width: 600px;
             width: 100%;
-            padding: 40px;
+            max-width: 400px;
         }
-        h1 {
+
+        .login-box h1 {
             color: #333;
             margin-bottom: 10px;
-            text-align: center;
+            font-size: 24px;
         }
-        .subtitle {
+
+        .login-box .subtitle {
             color: #999;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .admin-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
-        }
-        .admin-section h2 {
-            color: #667eea;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .admin-section p {
-            color: #666;
             font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
         }
-        .edit-link {
-            display: inline-block;
-            padding: 10px 20px;
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
             background: #667eea;
             color: white;
-            text-decoration: none;
+            border: none;
             border-radius: 4px;
-            transition: background 0.2s;
+            font-size: 16px;
             font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .edit-link:hover {
+
+        .btn-login:hover {
             background: #764ba2;
         }
-        .footer {
-            text-align: center;
-            color: #999;
-            font-size: 12px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+
+        .btn-login:active {
+            transform: scale(0.98);
         }
-        code {
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
+
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Admin Dashboard */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+
+        .admin-header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .admin-header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
+
+        .admin-content {
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #999;
+            transition: all 0.2s;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="url"],
+        .form-group input[type="password"],
+        .form-group textarea {
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 12px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+        }
+
+        .btn-save:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .works-list {
+            list-style: none;
+        }
+
+        .work-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .work-item h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .work-item p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .work-item .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit-work,
+        .btn-delete-work {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn-edit-work {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit-work:hover {
+            background: #764ba2;
+        }
+
+        .btn-delete-work {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete-work:hover {
+            background: #c82333;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .modal-buttons .btn-save {
+            background: #667eea;
+        }
+
+        .modal-buttons .btn-cancel {
+            background: #6c757d;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📝 Sibuk Bersantai Admin</h1>
-        <p class="subtitle">Edit konten situs Anda dengan mudah</p>
-
-        <div class="admin-section">
-            <h2>⚙️ Pengaturan Situs</h2>
-            <p>Edit judul, subtitle, intro, email kontak, dan link Instagram.</p>
-            <a href="https://github.com/sibukbersantai/sibukbersantai.github.io/edit/main/data/settings.json" target="_blank" class="edit-link">
-                ✏️ Edit Pengaturan
-            </a>
-        </div>
-
-        <div class="admin-section">
-            <h2>✨ Karya / Works</h2>
-            <p>Tambah, edit, atau hapus daftar karya Anda. File berisi array JSON dengan struktur: <code>title</code>, <code>description</code>, <code>url</code>.</p>
-            <a href="https://github.com/sibukbersantai/sibukbersantai.github.io/edit/main/data/works.json" target="_blank" class="edit-link">
-                ✏️ Edit Karya
-            </a>
-        </div>
-
-        <div class="admin-section">
-            <h2>📚 Bantuan</h2>
-            <p><strong>Cara edit:</strong></p>
-            <ol style="margin-left: 20px; color: #666;">
-                <li>Klik tombol "Edit"</li>
-                <li>Ubah JSON sesuai kebutuhan</li>
-                <li>Scroll ke bawah, klik "Commit changes"</li>
-                <li>Website otomatis update dalam 1-2 menit</li>
-            </ol>
-        </div>
-
-        <div class="footer">
-            <p>💾 Perubahan disimpan ke GitHub dan otomatis dipublikasikan ke website</p>
-            <p style="margin-top: 10px;"><a href="../" style="color: #667eea; text-decoration: none;">← Kembali ke Website</a></p>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <h1>🔐 Admin CMS</h1>
+            <p class="subtitle">Sibuk Bersantai - Manage Your Content</p>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="form-group">
+                <label>Password Admin</label>
+                <input type="password" id="passwordInput" placeholder="Masukkan password admin" onkeypress="if(event.key==='Enter') login()">
+            </div>
+            <button class="btn-login" onclick="login()">Login</button>
+            <p style="margin-top: 20px; text-align: center; color: #999; font-size: 12px;">
+                ℹ️ Password default: <strong>admin123</strong><br>
+                (Ubah di Pengaturan setelah login)
+            </p>
         </div>
     </div>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-container" id="adminScreen">
+        <div class="admin-header">
+            <h1>📝 Admin CMS - Sibuk Bersantai</h1>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="admin-content">
+            <div class="alert" id="alert"></div>
+
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('settings')">⚙️ Pengaturan</button>
+                <button class="tab-button" onclick="switchTab('works')">✨ Karya</button>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-content active" id="settingsTab">
+                <h2>Pengaturan Situs</h2>
+                <div class="form-group">
+                    <label>Judul Situs</label>
+                    <input type="text" id="settingTitle" placeholder="Judul situs">
+                </div>
+                <div class="form-group">
+                    <label>Subtitle</label>
+                    <input type="text" id="settingSubtitle" placeholder="Subtitle situs">
+                </div>
+                <div class="form-group">
+                    <label>Intro / Deskripsi</label>
+                    <textarea id="settingIntro" placeholder="Deskripsi singkat situs"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Email Kontak</label>
+                    <input type="email" id="settingEmail" placeholder="Email kontak">
+                </div>
+                <div class="form-group">
+                    <label>Instagram Link</label>
+                    <input type="url" id="settingInstagram" placeholder="https://instagram.com/...">
+                </div>
+                <div class="form-group">
+                    <label>🔐 Password Admin (Kosongkan jika tidak ingin ubah)</label>
+                    <input type="password" id="settingPassword" placeholder="Password baru">
+                </div>
+                <div class="button-group">
+                    <button class="btn-save" onclick="saveSettings()">💾 Simpan Pengaturan</button>
+                </div>
+            </div>
+
+            <!-- Works Tab -->
+            <div class="tab-content" id="worksTab">
+                <h2>Kelola Karya</h2>
+                <button class="btn-save" style="margin-bottom: 20px;" onclick="openAddWorkModal()">➕ Tambah Karya Baru</button>
+                <ul class="works-list" id="worksList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Work -->
+    <div class="modal" id="workModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Tambah Karya</h2>
+            <div class="form-group">
+                <label>Judul Karya</label>
+                <input type="text" id="modalWorkTitle" placeholder="Judul karya">
+            </div>
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea id="modalWorkDesc" placeholder="Deskripsi karya"></textarea>
+            </div>
+            <div class="form-group">
+                <label>URL (Opsional)</label>
+                <input type="url" id="modalWorkUrl" placeholder="https://...">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-save" onclick="saveWork()">💾 Simpan</button>
+                <button class="btn-cancel" onclick="closeWorkModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let works = [];
+        let currentEditIndex = -1;
+
+        // Check authentication on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const password = localStorage.getItem('adminPassword');
+            if (password) {
+                showAdmin();
+                loadData();
+            }
+        });
+
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (!password) {
+                showError('Password tidak boleh kosong');
+                return;
+            }
+            
+            const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
+            
+            if (password === storedPassword) {
+                localStorage.setItem('adminPassword', password);
+                showAdmin();
+                loadData();
+            } else {
+                showError('Password salah');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                localStorage.removeItem('adminPassword');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('adminScreen').style.display = 'none';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function showAdmin() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminScreen').style.display = 'block';
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+        }
+
+        async function loadData() {
+            try {
+                const settingsResponse = await fetch('../data/settings.json');
+                const settings = await settingsResponse.json();
+                
+                document.getElementById('settingTitle').value = settings.title || '';
+                document.getElementById('settingSubtitle').value = settings.subtitle || '';
+                document.getElementById('settingIntro').value = settings.intro || '';
+                document.getElementById('settingEmail').value = settings.contactEmail || '';
+                document.getElementById('settingInstagram').value = settings.instagram || '';
+
+                const worksResponse = await fetch('../data/works.json');
+                const worksData = await worksResponse.json();
+                works = worksData.works || [];
+                renderWorks();
+            } catch (error) {
+                showAlert('Error loading data: ' + error.message, 'error');
+            }
+        }
+
+        function renderWorks() {
+            const list = document.getElementById('worksList');
+            list.innerHTML = '';
+            if (works.length === 0) {
+                list.innerHTML = '<li style="padding: 20px; text-align: center; color: #999;">Belum ada karya. Klik tombol di atas untuk menambah.</li>';
+                return;
+            }
+            works.forEach((work, index) => {
+                const li = document.createElement('li');
+                li.className = 'work-item';
+                li.innerHTML = `
+                    <h3>${work.title}</h3>
+                    <p>${work.description}</p>
+                    ${work.url ? `<p><a href="${work.url}" target="_blank" style="color: #667eea;">🔗 ${work.url}</a></p>` : ''}
+                    <div class="actions">
+                        <button class="btn-edit-work" onclick="openEditWorkModal(${index})">✏️ Edit</button>
+                        <button class="btn-delete-work" onclick="deleteWork(${index})">🗑️ Hapus</button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function openAddWorkModal() {
+            currentEditIndex = -1;
+            document.getElementById('modalTitle').textContent = 'Tambah Karya Baru';
+            document.getElementById('modalWorkTitle').value = '';
+            document.getElementById('modalWorkDesc').value = '';
+            document.getElementById('modalWorkUrl').value = '';
+            document.getElementById('workModal').classList.add('show');
+        }
+
+        function openEditWorkModal(index) {
+            currentEditIndex = index;
+            const work = works[index];
+            document.getElementById('modalTitle').textContent = 'Edit Karya';
+            document.getElementById('modalWorkTitle').value = work.title;
+            document.getElementById('modalWorkDesc').value = work.description;
+            document.getElementById('modalWorkUrl').value = work.url || '';
+            document.getElementById('workModal').classList.add('show');
+        }
+
+        function closeWorkModal() {
+            document.getElementById('workModal').classList.remove('show');
+        }
+
+        function saveWork() {
+            const title = document.getElementById('modalWorkTitle').value;
+            const description = document.getElementById('modalWorkDesc').value;
+            const url = document.getElementById('modalWorkUrl').value;
+
+            if (!title || !description) {
+                showAlert('Judul dan deskripsi tidak boleh kosong', 'error');
+                return;
+            }
+
+            const work = { title, description, url };
+
+            if (currentEditIndex === -1) {
+                works.push(work);
+            } else {
+                works[currentEditIndex] = work;
+            }
+
+            saveWorksToFile();
+            closeWorkModal();
+            renderWorks();
+        }
+
+        function deleteWork(index) {
+            if (confirm('Hapus karya ini?')) {
+                works.splice(index, 1);
+                saveWorksToFile();
+                renderWorks();
+            }
+        }
+
+        async function saveSettings() {
+            const settings = {
+                title: document.getElementById('settingTitle').value,
+                subtitle: document.getElementById('settingSubtitle').value,
+                intro: document.getElementById('settingIntro').value,
+                contactEmail: document.getElementById('settingEmail').value,
+                instagram: document.getElementById('settingInstagram').value
+            };
+
+            const newPassword = document.getElementById('settingPassword').value;
+            if (newPassword) {
+                localStorage.setItem('adminPassword', newPassword);
+                document.getElementById('settingPassword').value = '';
+            }
+
+            try {
+                localStorage.setItem('siteSettings', JSON.stringify(settings));
+                showAlert('✅ Pengaturan disimpan di browser Anda!', 'success');
+                console.log('Settings:', settings);
+            } catch (error) {
+                showAlert('Error saving settings: ' + error.message, 'error');
+            }
+        }
+
+        async function saveWorksToFile() {
+            try {
+                localStorage.setItem('siteWorks', JSON.stringify({ works }));
+                showAlert('✅ Karya disimpan di browser Anda!', 'success');
+                console.log('Works:', { works });
+            } catch (error) {
+                showAlert('Error saving works: ' + error.message, 'error');
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => errorDiv.classList.remove('show'), 3000);
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = 'alert ' + type;
+            setTimeout(() => alert.className = 'alert', 5000);
+        }
+    </script>
 </body>
 </html>
