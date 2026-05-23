@@ -4,152 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIBUK BERSANTAI</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: #ffffff;
-      min-height: 100vh;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      color: #000000;
-    }
-
-    /* --- NAVIGATION --- */
-    .menu-wrapper {
-      position: fixed;
-      top: 30px;
-      left: 30px;
-      z-index: 10;
-    }
-
-    .menu-toggle {
-      font-size: clamp(14px, 2.6vw, 30px);
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #000000;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      line-height: 1.4;
-      padding: 0;
-      font-family: inherit;
-      transition: opacity 0.2s ease;
-      display: block;
-    }
-
-    .menu-toggle:hover {
-      opacity: 0.5;
-    }
-
-    .nav-list {
-      list-style: none;
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.4s ease, opacity 0.3s ease;
-    }
-
-    .nav-list.open {
-      max-height: 200px;
-      opacity: 1;
-    }
-
-    .nav-list li {
-      line-height: 1.4;
-    }
-
-    .nav-list a {
-      font-size: clamp(14px, 2.6vw, 30px);
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #000000;
-      text-decoration: none;
-      display: block;
-      transition: opacity 0.2s ease;
-    }
-
-    .nav-list a:hover {
-      opacity: 0.5;
-    }
-
-    /* --- PAGES --- */
-    .page {
-      display: none;
-      min-height: 100vh;
-      padding: 30px;
-    }
-
-    .page.active {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-
-    .page-content {
-      font-size: clamp(14px, 1.8vw, 18px);
-      line-height: 1.6;
-      font-weight: 400;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    /* Works List */
-    .works-list {
-      list-style: none;
-    }
-
-    .works-list li {
-      padding: 5px 0;
-      transition: opacity 0.2s ease;
-      cursor: default;
-    }
-
-    .works-list li:hover {
-      opacity: 0.5;
-    }
-    
-    .works-list .loading-text {
-      opacity: 0.4;
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
-    /* Contact */
-    .contact-info p {
-      margin-bottom: 10px;
-    }
-
-    .contact-info a {
-      color: #000000;
-      text-decoration: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .contact-info a:hover {
-      opacity: 0.5;
-    }
-
-    /* Responsive Spacing */
-    @media (max-width: 768px) {
-      .menu-wrapper { top: 20px; left: 20px; }
-      .page { padding: 20px; }
-    }
-
-    @media (max-width: 480px) {
-      .menu-wrapper { top: 15px; left: 15px; }
-      .page { padding: 15px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
-  <!-- NAVIGATION -->
   <div class="menu-wrapper">
     <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navList">
       Sibuk Bersantai
@@ -160,12 +17,9 @@
     </ul>
   </div>
 
-  <!-- PAGES -->
   <main>
-    <!-- HOME -->
     <section id="page-home" class="page active"></section>
 
-    <!-- WORKS -->
     <section id="page-works" class="page">
       <div class="page-content">
         <ul class="works-list" id="works-container">
@@ -174,7 +28,6 @@
       </div>
     </section>
 
-    <!-- CONTACT -->
     <section id="page-contact" class="page">
       <div class="page-content">
         <div class="contact-info">
@@ -186,86 +39,6 @@
     </section>
   </main>
 
-  <script>
-    const toggle = document.getElementById('menuToggle');
-    const navList = document.getElementById('navList');
-    const navLinks = navList.querySelectorAll('a');
-    const pages = document.querySelectorAll('.page');
-    let worksLoaded = false; // Penanda agar API tidak dipanggil berulang kali
-
-    // --- SANITY API CONNECTION ---
-    const projectId = 'diz7kk6p'; // ID Proyek Anda
-    const dataset = 'production'; // Dataset Anda
-    const query = encodeURIComponent('*[_type == "artwork"] | order(_createdAt desc)'); // GROQ Query
-    
-    // URL API Sanity
-    const sanityUrl = `https://${projectId}.api.sanity.io/v2021-10-21/data/query/${dataset}?query=${query}`;
-
-    async function loadWorks() {
-      if (worksLoaded) return; // Stop jika sudah diambil
-      
-      const container = document.getElementById('works-container');
-      
-      try {
-        const response = await fetch(sanityUrl);
-        const data = await response.json();
-        
-        container.innerHTML = ''; // Kosongkan teks "Memuat karya..."
-
-        if (data.result && data.result.length > 0) {
-          data.result.forEach(item => {
-            const li = document.createElement('li');
-            // Tampilkan Judul - Kategori
-            li.textContent = item.title; 
-            container.appendChild(li);
-          });
-          worksLoaded = true;
-        } else {
-          container.innerHTML = '<li>Belum ada karya.</li>';
-        }
-      } catch (error) {
-        container.innerHTML = '<li>Gagal memuat data.</li>';
-        console.error('Sanity API Error:', error);
-      }
-    }
-
-    // --- NAVIGATION LOGIC ---
-    toggle.addEventListener('click', () => {
-      const isOpen = navList.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', isOpen);
-      
-      if (!isOpen) {
-        const activePageId = document.querySelector('.page.active')?.id;
-        if (activePageId && activePageId !== 'page-home') {
-          showPage('home');
-        }
-      }
-    });
-
-    function showPage(pageId) {
-      pages.forEach(page => page.classList.remove('active'));
-      const targetPage = document.getElementById(`page-${pageId}`);
-      if (targetPage) {
-        targetPage.classList.add('active');
-        // Panggil Sanity API saat halaman Works dibuka
-        if (pageId === 'works') {
-          loadWorks();
-        }
-      } else {
-        document.getElementById('page-home').classList.add('active');
-      }
-    }
-
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetPage = link.getAttribute('data-page');
-        showPage(targetPage);
-        navList.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  </script>
-
+  <script type="module" src="/js/main.js"></script>
 </body>
 </html>
